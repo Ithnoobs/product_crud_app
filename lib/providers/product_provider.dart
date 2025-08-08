@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:product_crud_app/models/product.dart';
 import 'package:product_crud_app/services/api_service.dart';
 
+
 class ProductProvider with ChangeNotifier {
   final ApiService _apiService = ApiService();
 
-  List<Product> _allProducts = []; // Store all products from backend
+  List<Product> _allProducts = [];
   List<Product> _products = [];
   bool _loading = false;
   String _search = '';
   String _sortBy = 'Name';
-  String _sortOrder = 'A to Z'; // new: track sort order
+  String _sortOrder = 'A to Z';
   int _page = 1;
   int _pageSize = 10;
   bool _hasMore = true;
@@ -40,7 +41,6 @@ class ProductProvider with ChangeNotifier {
     }
 
     try {
-      // Only fetch from API if we don't have all products or if refreshing
       if (_allProducts.isEmpty || refresh) {
         _allProducts = await _apiService.fetchProducts(
           search: _search,
@@ -51,13 +51,11 @@ class ProductProvider with ChangeNotifier {
         );
       }
 
-      // Get filtered and sorted products
       List<Product> filteredAndSortedProducts = _getFilteredAndSortedProducts();
 
-      // Handle pagination on filtered results
       int startIndex = (_page - 1) * _pageSize;
       int endIndex = startIndex + _pageSize;
-      
+
       List<Product> pageProducts = [];
       if (startIndex < filteredAndSortedProducts.length) {
         endIndex = endIndex > filteredAndSortedProducts.length ? filteredAndSortedProducts.length : endIndex;
@@ -69,10 +67,9 @@ class ProductProvider with ChangeNotifier {
       } else {
         _products.addAll(pageProducts);
       }
-      
-      // Check if there are more pages
+
       _hasMore = endIndex < filteredAndSortedProducts.length;
-      
+
     } catch (e) {
       print('Error fetching products: $e');
     }
@@ -81,7 +78,6 @@ class ProductProvider with ChangeNotifier {
   }
 
   List<Product> _getFilteredAndSortedProducts() {
-    // Filter products based on search
     List<Product> filteredProducts = _allProducts;
     if (_search.isNotEmpty) {
       filteredProducts = _allProducts.where((product) {
@@ -89,25 +85,24 @@ class ProductProvider with ChangeNotifier {
       }).toList();
     }
 
-    // Apply sorting
     _applySorting(filteredProducts);
     return filteredProducts;
   }
 
   void setSearch(String search) {
-    _search = search.trim(); // Trim whitespace
-    _page = 1; // Reset page when searching
-    _products = []; // Clear current products
-    _hasMore = true; // Reset pagination
+    _search = search.trim();
+    _page = 1;
+    _products = [];
+    _hasMore = true;
     loadProducts(refresh: true);
   }
 
   void setSortBy(String sortBy, String selectedSortOrder) {
     _sortBy = sortBy;
     _sortOrder = selectedSortOrder;
-    _page = 1; // Reset page when sorting
-    _products = []; // Clear current products  
-    _hasMore = true; // Reset pagination
+    _page = 1;
+    _products = [];
+    _hasMore = true;
     loadProducts(refresh: true);
   }
 
@@ -119,7 +114,6 @@ class ProductProvider with ChangeNotifier {
   }
 
   void _applySorting(List<Product> products) {
-    // Handles local sorting for UI
     int modifier = (_sortOrder == 'Z to A' || _sortOrder == 'Highest to Lowest') ? -1 : 1;
     if (_sortBy == 'Name') {
       products.sort((a, b) => a.name.compareTo(b.name) * modifier);

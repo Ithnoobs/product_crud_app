@@ -144,9 +144,7 @@ class _ProductListPageState extends State<ProductListPage> {
                         },
                       );
                     } else {
-                      // Show different indicators based on state
                       if (provider.loading && provider.hasMore) {
-                        // Loading more items
                         return Center(
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -154,7 +152,6 @@ class _ProductListPageState extends State<ProductListPage> {
                           ),
                         );
                       } else if (!provider.hasMore && provider.products.isNotEmpty) {
-                        // End of pages indicator
                         return Center(
                           child: Padding(
                             padding: const EdgeInsets.all(24.0),

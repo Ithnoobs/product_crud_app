@@ -8,12 +8,10 @@ import '../models/product.dart';
 
 class ExportService {
   static Future<String> _getDownloadsPath() async {
-    // For Android - this goes to public Downloads folder
     final Directory dir = Directory('/storage/emulated/0/Download');
     if (await dir.exists()) {
       return dir.path;
     }
-    // Fallback to app documents if Downloads not found
     return (await getApplicationDocumentsDirectory()).path;
   }
 
@@ -64,7 +62,6 @@ class ExportService {
     );
     y += titleSize.height + 20;
 
-    // Draw a table for product details
     final table = PdfGrid();
     table.columns.add(count: 2);
 
@@ -77,7 +74,6 @@ class ExportService {
       cellPadding: PdfPaddings(left: 8, top: 6, right: 8, bottom: 6),
     );
 
-    // Details rows
     final details = [
       ['ID', product.id.toString()],
       ['Name', product.name],
@@ -93,13 +89,11 @@ class ExportService {
       gridRow.cells[1].style = valueStyle;
     }
 
-    // Draw the table
     table.draw(
       page: page,
       bounds: Rect.fromLTWH(margin, y, page.getClientSize().width - 2 * margin, 0),
     );
 
-    // Footer with export date
     final now = DateTime.now();
     final footerFont = PdfStandardFont(PdfFontFamily.helvetica, 10, style: PdfFontStyle.italic);
     final footerText = 'Exported: ${now.toLocal()}';

@@ -12,7 +12,6 @@ class ApiService {
     int? page,
     int pageSize = 10,
   }) async {
-    // Backend doesn't support filtering/sorting, so we just fetch all products
     final response = await _dio.get('/products');
     if (response.statusCode == 200){
       final data = response.data;
