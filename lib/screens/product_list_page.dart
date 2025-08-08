@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:product_crud_app/providers/product_provider.dart';
 import 'package:product_crud_app/screens/add_product_page.dart';
 import 'package:product_crud_app/screens/edit_product_page.dart';
+import 'package:product_crud_app/screens/product_detail_page.dart';
 import 'package:provider/provider.dart';
 import 'package:product_crud_app/widgets/sort_dropdown_row.dart';
-import 'package:product_crud_app/widgets/search_bar.dart';
+import 'package:product_crud_app/widgets/d_search_bar.dart';
+import 'package:product_crud_app/widgets/export_button_row.dart';
 
 class ProductListPage extends StatefulWidget {
   const ProductListPage({super.key});
@@ -84,42 +86,60 @@ class _ProductListPageState extends State<ProductListPage> {
                       return ListTile(
                         title: Text(product.name),
                         subtitle: Text('${product.price}\$, Stock: ${product.stock}'),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () async {
-                            final confirm = await showDialog<bool>(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text('Delete Product'),
-                                content: Text('Are you sure you want to delete ${product.name}?'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context, false),
-                                    child: Text('Cancel'),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.edit),
+                              tooltip: 'Edit',
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => EditProductPage(product: product),
                                   ),
-                                  TextButton(
-                                    onPressed: () async {
-                                      Navigator.pop(context, true);
-                                    },
-                                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                                    child: Text('Delete'),
+                                );
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.delete),
+                              tooltip: 'Delete',
+                              onPressed: () async {
+                                final confirm = await showDialog<bool>(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: Text('Delete Product'),
+                                    content: Text('Are you sure you want to delete ${product.name}?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context, false),
+                                        child: Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          Navigator.pop(context, true);
+                                        },
+                                        style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                                        child: Text('Delete'),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            );
-                            if (confirm == true){
-                              await provider.deleteProduct(product.id);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('${product.name} deleted')),
-                              );
-                            }
-                          }
+                                );
+                                if (confirm == true){
+                                  await provider.deleteProduct(product.id);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('${product.name} deleted')),
+                                  );
+                                }
+                              },
+                            ),
+                          ],
                         ),
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => EditProductPage(product: product),
+                              builder: (_) => ProductDetailPage(product: product),
                             ),
                           );
                         },
