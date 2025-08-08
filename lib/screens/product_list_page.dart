@@ -6,7 +6,6 @@ import 'package:product_crud_app/screens/product_detail_page.dart';
 import 'package:provider/provider.dart';
 import 'package:product_crud_app/widgets/sort_dropdown_row.dart';
 import 'package:product_crud_app/widgets/d_search_bar.dart';
-import 'package:product_crud_app/widgets/export_button_row.dart';
 
 class ProductListPage extends StatefulWidget {
   const ProductListPage({super.key});
